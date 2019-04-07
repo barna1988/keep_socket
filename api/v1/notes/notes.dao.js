@@ -18,8 +18,8 @@ const shareNotes = (notes, userIds) => {
       }
     }, (error, data) => {
 
-      console.log('error in mongoose :', error);
-      console.log('data after update :', data);
+      //console.log('error in mongoose :', error);
+      //console.log('data after update :', data);
 
       if (error) {
         reject({
@@ -52,7 +52,6 @@ const getNoteForUserID = (userID) => {
 
     noteModel.find({}, (error, notes) => {
       if (error) {
-        console.log(error);
         reject({
           message: 'Error while getting notes',
           status: 500

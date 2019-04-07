@@ -45,7 +45,6 @@
 
     $("#getNote").on('click', (event) => {
       const userID = $("#userID").val();
-      console.log('userID', userID);
       if(userID) {
         socket.emit('getNote', userID);
       }
@@ -55,7 +54,6 @@
       //shareNotewithUsers(event, socket);
 
       let listUserIDs = $("#listUserID").val();
-      console.log('list of users', listUserIDs);
 
       let listUserID = listUserIDs.split(',');
 

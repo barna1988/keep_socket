@@ -35,7 +35,6 @@ const connectToDatabase = () => {
   let dbConnection = db.getMongoConnection();
   dbConnection.on('error', db.onError);
   dbConnection.once('open', db.onSuccess);
-  logger.info("inside connect to db - ");
 }
 
 // settting application middleware with basic modules
