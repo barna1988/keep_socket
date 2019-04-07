@@ -5,7 +5,6 @@ const api = require('./api/v1');
 const { serverConfig } = require('./config').appConfig;
 const db = require('./db');
 
-
 //Event listener for HTTP server "error" event.
 const onError = (error) => {
   if (error.syscall !== 'listen') {
@@ -36,6 +35,7 @@ const connectToDatabase = () => {
   let dbConnection = db.getMongoConnection();
   dbConnection.on('error', db.onError);
   dbConnection.once('open', db.onSuccess);
+  logger.info("inside connect to db - ");
 }
 
 // settting application middleware with basic modules
