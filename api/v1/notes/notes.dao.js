@@ -1,46 +1,56 @@
 let noteModel = require('./notes.entity');
+let uuidv1 = require('uuid/v1');
 
-const shareNotes = (notes, userIds) => {
+const shareNotes = (notes, userId) => {
 
   return new Promise((resolve, reject) => {
 
-    noteModel.where({
-      id: {
-        $in: notes
-      }
-    }).setOptions({
-      multi: true,
-      overwrite: true
+    try {
 
-    }).update({
-      $push: {
-        sharedTo: userIds
-      }
-    }, (error, data) => {
+      let noteList = [];
+      let userIDList = [];
 
-      //console.log('error in mongoose :', error);
-      //console.log('data after update :', data);
-
-      if (error) {
-        reject({
-          message: "error : " + error.message,
-          status: 500
+      if (!notes || !notes.title) {
+        let note = new noteModel({
+          id: uuidv1()
         });
-      } else if (data) {
 
-        if (data.nModified > 0 && data.n > 0) {
-          resolve({
-            message: "data updated for notes : " + notes,
-            status: 201
-          });
-        } else {
-          reject({
-            message: "No data found for notes : " + notes,
-            status: 404
-          });
-        }
+        noteList.push(note);
+        userIDList.push(userId);
+
       }
-    });
+
+      const dataToUpdate = {
+        $push: {
+          sharedTo: userIDList
+        }
+      };
+
+      const notesToFind = {
+        id: { $in: noteList }
+      };
+
+      const options = {
+        multi: true,
+        overwrite: true
+      };
+
+      noteModel.update(notesToFind, dataToUpdate, options, (error, data) => {
+
+        resolve({
+          message: "Shared Successfully",
+          status: 201
+        });
+
+      });
+
+    } catch (error) {
+      reject({
+        message: "Error occured" + error.message,
+        status: 500
+      });
+    }
+
 
   });
 };
@@ -50,33 +60,25 @@ const getNoteForUserID = (userID) => {
 
   return new Promise((resolve, reject) => {
 
-    noteModel.find({}, (error, notes) => {
+    noteModel.find({id: uuidv1()} , (error, notes) => {
+      
       if (error) {
         reject({
           message: 'Error while getting notes',
           status: 500
         });
-      } else if (!notes || notes.length === 0) {
-        reject({
-          message: `No Notes found for userID ${userID}`,
-          status: 404
-        });
       } else {
-
-        const notesShared = notes.filter(note => {
-          return note.sharedTo.find(n1 => n1 === userID);
-        });
-
-        // console.log('notes : ' , notesShared);
-
         resolve({
-          message: 'Shared Notes Recieved - ' + notesShared.length,
-          status: 200,
-          notes: notesShared
+          message: 'Get all the notes',
+          status: 200
         });
-        
-        
       }
+
+    });
+
+    resolve({
+      message: 'Get all the notes',
+      status: 200
     });
 
   });

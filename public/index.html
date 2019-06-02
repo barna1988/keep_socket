@@ -61,6 +61,7 @@
         noteId: $("#noteID").val(),
         userId: listUserID
       }
+      // console.log('share note');
       socket.emit('shareNote', data);
     });
 
